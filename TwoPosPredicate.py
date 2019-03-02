@@ -7,4 +7,4 @@ class TwoPosPredicate:
         self.constant_situation = constant_situation
         self.value = value
     def print(self):
-        print('{self.name}(A{self.constant_situation}, {self.value})')
+        print("{}(A{}, {})".format(self.name, self.constant_situation, self.value))

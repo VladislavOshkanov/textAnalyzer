@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from MulPredicate import MulPredicate
 def processText(sentence):
     print ('processing...')
-    p = subprocess.Popen('java -jar LogicText7.jar config.properties.nix \"(%s)\"' % sentence, shell=True).wait()
+    p = subprocess.Popen('java -jar LogicText8.jar config.properties.nix \"(%s)\"' % sentence, shell=True).wait()
     print ('text processed...')
     print ('parsing...')
     predicates = []
@@ -21,5 +21,6 @@ def processText(sentence):
         predicates.append(MulPredicate(predicateName, roles))
         
     print ('parsed')
-    for index, predicate in enumerate(predicates):
-            predicate.to_special_form().assign_constant_situation(index).to_two_positional().print()
+    # for index, predicate in enumerate(predicates):
+            # predicate.to_special_form().assign_constant_situation(index).to_two_positional()
+    return predicates

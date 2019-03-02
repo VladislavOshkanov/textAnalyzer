@@ -1,7 +1,8 @@
 from TwoPosPredicate import TwoPosPredicate
 class MulPredicate:
     name = None
-    roles = None    
+    roles = None
+    two_pos_predicates = None    
     
     def __init__(self, name, roles):
         self.name = name
@@ -21,12 +22,20 @@ class MulPredicate:
     def to_two_positional(self):
         two_pos_predicates = []
         for key, value in self.roles.items():
+            if (key == 'constant_situation'):
+                next
             if (key == 'act'):
                 two_pos_predicates.append(TwoPosPredicate('Что делает', self.roles['constant_situation'], value))
             else:
                 two_pos_predicates.append(TwoPosPredicate(key, self.roles['constant_situation'], value))
-        
+        # for predicate in two_pos_predicates:
+            # predicate.print()
+        self.two_pos_predicates = two_pos_predicates
         return self
+
     def print(self):
-        print (f'Name: {self.name}')
-        print (f'Roles: {self.roles}')
+        print (f'{self.name} (', sep=' ', end='', flush=True)
+        for key, value in self.roles.items():
+            if (key != 'constant_situation'):
+                print (f'{key}?: {value}, ', sep=' ', end='', flush=True)
+        print (')')
