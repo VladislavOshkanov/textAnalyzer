@@ -14,14 +14,17 @@ from kivy.uix.scrollview import ScrollView
 from kivy.config import Config
 from kivy.base import runTouchApp
 from kivy.uix.checkbox import CheckBox
-from Processor import process
+from Processor import process, build_hypothesis
 
-
+def hasNumbers(inputString):
+    return any(char.isdigit() for char in inputString)
 class MainApp(App):
 
     def build(self):
+        # Window.clearcolor = (1, 1, 1, 1)
+        self.title = 'Text2Pred'
         self.predicates = None
-                
+        self.hypothesis = None
         self.root = GridLayout(cols = 1, spacing = 10)
 
         # create a button to release everything
@@ -43,6 +46,10 @@ class MainApp(App):
 
         def on_process_btn_release(text):
             self.predicates = process(self.text.text)
+            self.hypothesis = build_hypothesis(self.text.text)
+            for h in self.hypothesis:
+                print(h.to_string())
+
             two_pos_predicates = []
             for index, predicate in enumerate(self.predicates):
                 tp = predicate.to_special_form().assign_constant_situation(index).to_two_positional().two_pos_predicates
@@ -57,11 +64,28 @@ class MainApp(App):
 
             checkboxes_refs = {}
             labels_refs = {}
+
+
+            for index, h in enumerate(self.hypothesis):
+                result = GridLayout(size=(300, 300), rows=1)
+                my_label = Label(text = "Гипотеза " + h.to_string())
+                result.add_widget(my_label)
+                result.add_widget(GridLayout(size=(100,100)))
+                result.add_widget(Button(text='Гипотеза верна'))
+                resultsLayout.add_widget(result)
+
+
             for index, predicate in enumerate(two_pos_predicates):
                 result = GridLayout(size=(300, 300), rows=1)
                 my_label = Label(text = predicate.to_string())
-                labels_refs[str(index)] = {"label": my_label, "pred": predicate}
+                labels_refs[str(index)] = {"label": my_label, "pred": predicate, "ti":None}
                 result.add_widget(my_label)
+                if (isinstance(predicate.value, str) and not hasNumbers(predicate.value) and predicate.value.find('_') > 0):
+                    labels_refs[str(index)]["ti"] = TextInput()
+                    result.add_widget(labels_refs[str(index)]["ti"])
+                else:
+                    result.add_widget(GridLayout(size=(100,100)))
+
                 cb = CheckBox()
                 checkboxes_refs["CB" + str(index)] = {"checkbox": cb, "cs": predicate.constant_situation};            
                 result.add_widget(cb)
@@ -81,9 +105,16 @@ class MainApp(App):
                     
                 for idx, label in labels_refs.items():
                     label["label"].text = label["pred"].to_string()
-
+            def on_pred_btn_release(arg):
+                for idx, cb in labels_refs.items():
+                    if cb["ti"]:
+                        cb["pred"].value = cb["ti"].text
+                        cb["label"].text = cb["pred"].to_string()
             btn_cs = Button(text='Объединить константы-ситуации', pos_hint={'x': .1, 'y': .1}, size_hint=(.8, .2),
                 halign='center', on_release=on_cs_btn_release)
+            self.root.add_widget(btn_cs)
+            btn_cs = Button(text='Заполнить значения предикатов', pos_hint={'x': .1, 'y': .1}, size_hint=(.8, .2),
+                halign='center', on_release=on_pred_btn_release)
             self.root.add_widget(btn_cs)
         
 

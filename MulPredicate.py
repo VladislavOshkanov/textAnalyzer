@@ -25,9 +25,14 @@ class MulPredicate:
             if (key == 'constant_situation'):
                 next
             if (key == 'act'):
-                two_pos_predicates.append(TwoPosPredicate('Что делает', self.roles['constant_situation'], value))
+                two_pos_predicates.append(TwoPosPredicate('что делает', self.roles['constant_situation'], value))
+            elif (key == 'obj'):
+                two_pos_predicates.append(TwoPosPredicate('объект', self.roles['constant_situation'], value))
+            elif (key == 'constant_situation'):
+                print('skip')
             else:
                 two_pos_predicates.append(TwoPosPredicate(key, self.roles['constant_situation'], value))
+
         # for predicate in two_pos_predicates:
             # predicate.print()
         self.two_pos_predicates = two_pos_predicates
