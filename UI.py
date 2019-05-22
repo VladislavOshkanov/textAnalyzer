@@ -15,6 +15,8 @@ from kivy.config import Config
 from kivy.base import runTouchApp
 from kivy.uix.checkbox import CheckBox
 from Processor import process, build_hypothesis
+from IdChecker import checkForId
+from IncludeChecker import checkForInclude
 
 def hasNumbers(inputString):
     return any(char.isdigit() for char in inputString)
@@ -47,10 +49,26 @@ class MainApp(App):
         def on_process_btn_release(text):
             self.predicates = process(self.text.text)
             self.hypothesis = build_hypothesis(self.text.text)
+
             for h in self.hypothesis:
                 print(h.to_string())
 
             two_pos_predicates = []
+
+            for index1, predicate1 in enumerate(self.predicates):
+                for index2, predicate2 in enumerate(self.predicates):
+                    h = checkForId(predicate1, predicate2, index1, index2)
+                    if h and index1 > index2: 
+                        print(h.to_string())
+                        self.hypothesis.append(h)
+
+            for index1, predicate1 in enumerate(self.predicates):
+                for index2, predicate2 in enumerate(self.predicates):
+                    h = checkForInclude(predicate1, predicate2, index1, index2)
+                    if h and index1 != index2: 
+                        print(h.to_string())
+                        self.hypothesis.append(h)
+
             for index, predicate in enumerate(self.predicates):
                 tp = predicate.to_special_form().assign_constant_situation(index).to_two_positional().two_pos_predicates
                 for pred in tp:
