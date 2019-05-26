@@ -5,6 +5,19 @@ def process(text):
     return processText(text)
 
 
+before_dictionaries = []
+before_dictionaries.append({'сначала': -1, '': 0, 'потом': 1})
+before_dictionaries.append({'позавчера'})
+
+indicators = ['позавчера', 'вчера', 'сегодня', 'завтра', 'сначала', 'потом']
+relations = [
+    [0, -1, -1, -1, 0, 0], 
+    [1,  0, -1, -1, 0, 0], 
+    [1,  1,  0, -1, 0, 0], 
+    [1,  1,  1,  0, 0, 0], 
+    [0,  0,  0,  0, -1, 0],  
+    [0,  0,  0,  0, 0, -1]]
+
 
 beforeSigns = ['сначала']
 afterSigns = ['потом']
@@ -12,18 +25,21 @@ sameTimeSigns = []
 
 def build_hypothesis(text):
     hypothesis = []
-    beforeSignIndex = -1
-    afterSignIndex = -1
+    firstIndicatorIndex = -1
+    secondIndicatorIndex = -1
 
-    for sign in beforeSigns:
-        if (text.find(sign) >= 0):
-            beforeSignIndex = text.index(sign)
-    for sign in afterSigns:
-        if (text.find(sign) >= 0):
-            afterSignIndex = text.index(sign)
-    
-    if (beforeSignIndex < afterSignIndex):
+    for index, indicator in enumerate(indicators):
+        if (text.find(indicator) >= 0):
+            if firstIndicatorIndex == -1: 
+                firstIndicatorIndex = index
+            else:
+                secondIndicatorIndex = index
+
+    if relations[firstIndicatorIndex][secondIndicatorIndex] * (secondIndicatorIndex - firstIndicatorIndex) < 0:
         hypothesis.append(Hypothesis('Before', 1, 2))
-    elif (beforeSignIndex > afterSignIndex):
+    elif relations[firstIndicatorIndex][secondIndicatorIndex] * (secondIndicatorIndex - firstIndicatorIndex) > 0:
         hypothesis.append(Hypothesis('Before', 2, 1))
+    else:
+        hypothesis.append(Hypothesis('SameTime', 2, 1))
+
     return hypothesis
