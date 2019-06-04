@@ -36,7 +36,7 @@ class MainApp(App):
         self.text = InputText.InputText()
         # s = Scatter(pos_hint={'x': .1 ,'y': .2 },
                     # size_hint=(.2, .8))
-        ti = TextInput(text = 'Вася вчера купил у Пети красный мотоцикл за 10 рублей.', pos_hint={'x': .1 ,'y': .7 }, size_hint=(.8, .2))
+        ti = TextInput(text = '', pos_hint={'x': .1 ,'y': .7 }, size_hint=(.8, .2))
         # s.add_widget(ti)
         def on_text(instance, value):
             self.text.setText(value)
@@ -81,6 +81,7 @@ class MainApp(App):
             results.add_widget(resultsLayout)
 
             checkboxes_refs = {}
+            buttons_refs = {}
             labels_refs = {}
 
 
@@ -89,7 +90,14 @@ class MainApp(App):
                 my_label = Label(text = "Гипотеза " + h.to_string())
                 result.add_widget(my_label)
                 result.add_widget(GridLayout(size=(100,100)))
-                result.add_widget(Button(text='Гипотеза верна'))
+                button = Button(text='Гипотеза верна')
+                def change_text(button):
+                    if button.text == 'Гипотеза верна':
+                        button.text = 'Гипотеза не верна'
+                    else:
+                        button.text = 'Гипотеза верна'
+                button.bind(on_press=change_text)
+                result.add_widget(button)   
                 resultsLayout.add_widget(result)
 
 

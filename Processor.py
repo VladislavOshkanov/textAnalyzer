@@ -36,10 +36,10 @@ def build_hypothesis(text):
                 secondIndicatorIndex = index
 
     if relations[firstIndicatorIndex][secondIndicatorIndex] * (secondIndicatorIndex - firstIndicatorIndex) < 0:
-        hypothesis.append(Hypothesis('Before', 1, 2))
+        hypothesis.append(Hypothesis('Before', 0, 1))
     elif relations[firstIndicatorIndex][secondIndicatorIndex] * (secondIndicatorIndex - firstIndicatorIndex) > 0:
-        hypothesis.append(Hypothesis('Before', 2, 1))
+        hypothesis.append(Hypothesis('Before', 1, 0))
     else:
-        hypothesis.append(Hypothesis('SameTime', 2, 1))
+        hypothesis.append(Hypothesis('SameTime', 1, 0))
 
     return hypothesis
