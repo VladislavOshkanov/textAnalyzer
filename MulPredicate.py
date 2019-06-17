@@ -44,3 +44,9 @@ class MulPredicate:
             if (key != 'constant_situation'):
                 print (f'{key}?: {value}, ', sep=' ', end='', flush=True)
         print (')')
+    def to_string(self):
+        string = "[color=5b46c7]{}[color=000000](".format(self.name)
+        for key, value in self.roles.items():
+            string = string + '{}, '.format(value)
+        string=string + ')'
+        return string
