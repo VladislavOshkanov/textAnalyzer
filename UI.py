@@ -70,16 +70,10 @@ class MainApp(App):
         self.root.add_widget(self.area4)
 
        
-
-        # create a button to release everything
-       
-
-        # show current configuration
         self.text = InputText.InputText()
-        # s = Scatter(pos_hint={'x': .1 ,'y': .2 },
-                    # size_hint=(.2, .8))
+
         ti = TextInput(text = '', pos_hint={'x': .1 ,'y': .7 })
-        # s.add_widget(ti)
+
         def on_text(instance, value):
             self.text.setText(value)
         ti.bind(text=on_text)
@@ -134,8 +128,6 @@ class MainApp(App):
                 resultsLayout.add_widget(result)
                 if h.name=='Include':
                     G.add_edge('S{}'.format(h.first_cs), 'S{}'.format(h.second_cs))
-
-
 
 
             for index, predicate in enumerate(two_pos_predicates):
