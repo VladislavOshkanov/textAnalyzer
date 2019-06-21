@@ -2,7 +2,13 @@ import subprocess
 import xml.etree.ElementTree as ET
 from MulPredicate import MulPredicate
 def processText(sentence):
+    """
+    Обрабатывает текст программой LogicText и возвращает список многоместных предикатов.
+    :param sentence: текст для обработки прогаммой LogicText
+    :return: список полученных двухместных предикатов
+    """
     print ('processing...')
+
     p = subprocess.Popen('java -jar LogicText8.jar config.properties.nix \"(%s)\"' % sentence, shell=True).wait()
     print ('text processed...')
     print ('parsing...')

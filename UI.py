@@ -48,10 +48,6 @@ class MainApp(App):
 
         def on_process_btn_release(text):
             self.predicates = process(self.text.text)
-            self.hypothesis = build_hypothesis(self.text.text)
-
-            for h in self.hypothesis:
-                print(h.to_string())
 
             two_pos_predicates = []
 
@@ -73,6 +69,9 @@ class MainApp(App):
                 tp = predicate.to_special_form().assign_constant_situation(index).to_two_positional().two_pos_predicates
                 for pred in tp:
                     two_pos_predicates.append(pred)
+
+            self.hypothesis = build_hypothesis(self.text.text, two_pos_predicates)
+
 
             results = ScrollView()
             self.root.add_widget(results)

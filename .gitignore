@@ -1,2 +1,5 @@
 out.txt
 __pycache__
+.idea/
+Release.key
+winehq.key
