@@ -17,21 +17,24 @@ from kivy.uix.checkbox import CheckBox
 from Processor import process, build_hypothesis
 from IdChecker import checkForId
 from IncludeChecker import checkForInclude
+from RDFExporter import export_to_rdf
+
 
 def hasNumbers(inputString):
     return any(char.isdigit() for char in inputString)
+
+
 class MainApp(App):
 
     def build(self):
-        # Window.clearcolor = (1, 1, 1, 1)
-        self.title = 'Text2Pred'
+
+        self.title = 'Text2Time'
         self.predicates = None
-        self.hypothesis = None
-        self.root = GridLayout(cols = 1, spacing = 10)
+        self.hypothesis = []
+        self.root = GridLayout(cols=1, spacing=10)
 
         # create a button to release everything
        
-
         # show current configuration
         self.text = InputText.InputText()
         # s = Scatter(pos_hint={'x': .1 ,'y': .2 },
@@ -44,8 +47,6 @@ class MainApp(App):
         
         self.root.add_widget(ti)
         
-
-
         def on_process_btn_release(text):
             self.predicates = process(self.text.text)
 
@@ -72,17 +73,17 @@ class MainApp(App):
 
             self.hypothesis = build_hypothesis(self.text.text, two_pos_predicates)
 
+            export_to_rdf(two_pos_predicates, self.hypothesis)
 
             results = ScrollView()
             self.root.add_widget(results)
 
-            resultsLayout = GridLayout(size=(1000, 1000), cols = 1, spacing = 10, size_hint_y = None)
-            results.add_widget(resultsLayout)
+            results_layout = GridLayout(size=(1000, 1000), cols=1, spacing=10, size_hint_y=None)
+            results.add_widget(results_layout)
 
             checkboxes_refs = {}
             buttons_refs = {}
             labels_refs = {}
-
 
             for index, h in enumerate(self.hypothesis):
                 result = GridLayout(size=(300, 300), rows=1)
@@ -90,22 +91,23 @@ class MainApp(App):
                 result.add_widget(my_label)
                 result.add_widget(GridLayout(size=(100,100)))
                 button = Button(text='Гипотеза верна')
+
                 def change_text(button):
                     if button.text == 'Гипотеза верна':
                         button.text = 'Гипотеза не верна'
                     else:
                         button.text = 'Гипотеза верна'
+
                 button.bind(on_press=change_text)
                 result.add_widget(button)   
-                resultsLayout.add_widget(result)
-
+                results_layout.add_widget(result)
 
             for index, predicate in enumerate(two_pos_predicates):
                 result = GridLayout(size=(300, 300), rows=1)
                 my_label = Label(text = predicate.to_string())
                 labels_refs[str(index)] = {"label": my_label, "pred": predicate, "ti":None}
                 result.add_widget(my_label)
-                if (isinstance(predicate.value, str) and not hasNumbers(predicate.value) and predicate.value.find('_') > 0):
+                if isinstance(predicate.value, str) and not hasNumbers(predicate.value) and predicate.value.find('_') > 0:
                     labels_refs[str(index)]["ti"] = TextInput()
                     result.add_widget(labels_refs[str(index)]["ti"])
                 else:
@@ -115,7 +117,8 @@ class MainApp(App):
                 checkboxes_refs["CB" + str(index)] = {"checkbox": cb, "cs": predicate.constant_situation};            
                 result.add_widget(cb)
         
-                resultsLayout.add_widget(result)
+                results_layout.add_widget(result)
+
             def on_cs_btn_release(arg):
                 cs_set = set()
                 for idx, cb in checkboxes_refs.items():
@@ -155,6 +158,3 @@ if __name__ == '__main__':
     MainApp().run()
     
 
-  
-
-# processText("Мама мыла раму")

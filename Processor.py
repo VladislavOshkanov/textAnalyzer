@@ -16,8 +16,8 @@ relations = [
     [1,  0, -1, -1, 0,  0],
     [1,  1,  0, -1, 0,  0],
     [1,  1,  1,  0, 0,  0],
-    [0,  0,  0,  0, -1, 0],  
-    [0,  0,  0,  0, 0, -1]]
+    [0,  0,  0,  0, 0, -1],
+    [0,  0,  0,  0, 1, 0]]
 
 
 beforeSigns = ['сначала']
@@ -25,8 +25,8 @@ afterSigns = ['потом']
 sameTimeSigns = []
 
 
-
 def get_predicate_wordlist(predicate):
+    return []
 
 
 def get_related_cs(text, predicates, marker):
@@ -37,8 +37,6 @@ def get_related_cs(text, predicates, marker):
     for token in tokens:
         for word in token.split():
             distance = 999999
-
-
 
 
 def build_hypothesis(text, predicates):

@@ -18,8 +18,6 @@ from regular_expressions import (
     multi_single_quote_finder
 )
 
-
-
 def split_with_locations(text, locations):
     """
      Используем список целых чисел, чтобы разбить строку
