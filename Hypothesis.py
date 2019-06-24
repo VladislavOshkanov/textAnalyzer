@@ -1,4 +1,8 @@
 class Hypothesis:
+    """
+    Класс для представления гипотезы.
+    Включает её имя и константы ситуации.
+    """
     name = None
     first_cs = None
     second_cs = None
