@@ -2,25 +2,46 @@ from LogicText import processText
 from Hypothesis import Hypothesis
 from StringTokenizer import tokenize
 
+
 def process(text):
     return processText(text)
 
 
-indicators = ['позавчера', 'вчера', 'сегодня', 'завтра', 'сначала', 'потом']
-relations = [
-    [0, -1, -1, -1, 0,  0],
-    [1,  0, -1, -1, 0,  0],
-    [1,  1,  0, -1, 0,  0],
-    [1,  1,  1,  0, 0,  0],
-    [0,  0,  0,  0, 0, -1],
-    [0,  0,  0,  0, 1, 0]]
+indicators = ['позавчера', 'вчера', 'сегодня', 'завтра',
+              'послезавтра', 'сначала', 'потом', 'в прошлом году',
+              'в позапрошлом году', '2 года назад', 'два года назад',
+              '3 года назад', 'три года назад', '10 лет назад',
+              'десять лет назад', 'в следующем году', 'через год',
+              'через два года', 'через 2 года', 'через три года',
+              'через 3 года', 'в то же время']
 
+
+relations = [[ 0, 1, 1, -1, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ -1,  0, 1, 1, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ -1,  -1, 0, -1, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ -1,  -1, -1, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 0,  0, 0, 1, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 0,  0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0,  0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 1,  1, 1, 1, 1, 1, 1, 0, 0, 0, 0, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 0, 0, 0, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 0, 0, 0, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, -1, -1, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+             [ 1,  1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+             [-1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 1, 1, 1, 1, 0],
+             [-1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 1, 1, 1, 1, 0],
+             [-1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 1, 1, 0],
+             [-1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 1, 1, 0],
+             [-1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0],
+             [-1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 beforeSigns = ['сначала']
 afterSigns = ['потом']
 sameTimeSigns = []
-
-
 
 
 def get_predicate_wordlist(predicate):
@@ -40,7 +61,7 @@ def get_related_cs(text, predicates, marker):
                 marker_index = word_index
             distance = 999999
             for index, predicate in enumerate(predicates):
-                for word in predicate.get_word_list()
+                for word in predicate.get_word_list():
                     if abs(word_index - marker_index) < distance:
                         distance = abs(word_index - marker_index)
                         related_cs = index
@@ -66,9 +87,10 @@ def build_hypothesis(text, predicates):
             else:
                 second_indicator_index = index
 
-    if relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) < 0:
+    if relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) > 0:
         hypothesis.append(Hypothesis('Before', 0, 1))
-    elif relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) > 0:
+    elif relations[first_indicator_index][second_indicator_index] * (
+            second_indicator_index - first_indicator_index) < 0:
         hypothesis.append(Hypothesis('Before', 1, 0))
     else:
         hypothesis.append(Hypothesis('SameTime', 1, 0))
