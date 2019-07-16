@@ -82,5 +82,4 @@ def export_to_rdf(predicates, hypothesis):
     f.write(rdf)
     f.close()
 
-    print(rdf)
 

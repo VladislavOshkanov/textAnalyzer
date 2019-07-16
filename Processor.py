@@ -81,10 +81,12 @@ def build_hypothesis(text, predicates):
     second_indicator_index = -1
 
     for index, indicator in enumerate(indicators):
-        if (text.find(indicator) >= 0):
+        if text.find(indicator) >= 0:
             if first_indicator_index == -1:
                 first_indicator_index = index
+                print(get_related_cs(text, predicates, indicator))
             else:
+                print(get_related_cs(text, predicates, indicator))
                 second_indicator_index = index
 
     if relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) > 0:

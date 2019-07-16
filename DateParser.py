@@ -26,6 +26,7 @@ def find_full_dates(text):
 
     print(re.findall(full_date_regex, text))
 
+
 def find_dot_dates(text):
     dot_date_regex = '(0?[1-9][0-9]).(1?:01|02|03|04|05|06|07|08|09|10|11|12).([1,2][0-9]{3})'
 

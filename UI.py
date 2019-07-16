@@ -71,7 +71,7 @@ class MainApp(App):
                 for pred in tp:
                     two_pos_predicates.append(pred)
 
-            self.hypothesis = build_hypothesis(self.text.text, two_pos_predicates)
+            self.hypothesis = build_hypothesis(self.text.text, self.predicates)
 
             export_to_rdf(two_pos_predicates, self.hypothesis)
 

@@ -1,6 +1,8 @@
 import subprocess
 import xml.etree.ElementTree as ET
 from MulPredicate import MulPredicate
+
+
 def processText(sentence):
     """
     Обрабатывает текст программой LogicText и возвращает список многоместных предикатов.
