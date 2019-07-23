@@ -87,6 +87,12 @@ def build_hypothesis(text, predicates):
         mapped_word.set_word(word)
         mapped_word_list.add_word(mapped_word)
 
+    for index, predicate in enumerate(predicates):
+        for word in predicate.get_word_list():
+            mapped_word_list.assign_cs_to_word(word, index)
+    mapped_word_list.fill_empty_cs()
+    mapped_word_list.print()
+
     hypothesis = []
     first_indicator_index = -1
     second_indicator_index = -1

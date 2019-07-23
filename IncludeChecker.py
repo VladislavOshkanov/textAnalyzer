@@ -19,4 +19,3 @@ def checkForInclude(pred1, pred2, cs1, cs2):
                 return Hypothesis('Include', cs1, cs2) 
 
     return None
-                   

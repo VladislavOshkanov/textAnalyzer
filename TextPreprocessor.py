@@ -12,4 +12,4 @@ def split_text_by_words(text):
             words.append(word)
     words = list(filter(lambda w: re.match(r"^\w+", w), words))
 
-    print(words)
+    return words
