@@ -1,7 +1,9 @@
 from LogicText import processText
 from Hypothesis import Hypothesis
 from StringTokenizer import tokenize
-
+from TextPreprocessor import split_text_by_words
+from MappedWordList import MappedWordList
+from MappedWord import  MappedWord
 
 def process(text):
     return processText(text)
@@ -76,6 +78,15 @@ def build_hypothesis(text, predicates):
         что маркер i обозначает действия раньше маркера j, и наоборот. 0 обозначает,
         что маркеры никак не связаны между собой
     """
+    mapped_word_list = MappedWordList()
+
+    words = split_text_by_words(text)
+
+    for word in words:
+        mapped_word = MappedWord()
+        mapped_word.set_word(word)
+        mapped_word_list.add_word(mapped_word)
+
     hypothesis = []
     first_indicator_index = -1
     second_indicator_index = -1
