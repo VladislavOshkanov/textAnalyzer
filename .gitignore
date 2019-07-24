@@ -4,3 +4,6 @@ __pycache__
 Release.key
 winehq.key
 out.xml
+dist/
+package-lock.json
+node_modules/

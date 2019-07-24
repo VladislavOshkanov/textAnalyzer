@@ -53,7 +53,7 @@ class MulPredicate:
             elif (key == 'obj'):
                 two_pos_predicates.append(TwoPosPredicate('объект', self.roles['constant_situation'], value))
             elif (key == 'constant_situation'):
-                print('skip')
+                pass
             else:
                 two_pos_predicates.append(TwoPosPredicate(key, self.roles['constant_situation'], value))
 
