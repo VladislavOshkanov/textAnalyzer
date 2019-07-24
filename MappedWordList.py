@@ -28,7 +28,7 @@ class MappedWordList:
     def fill_empty_cs(self):
         current_cs = 0;
         for mapped_word in reversed(self.words):
-            if (mapped_word.constant_situation != None):
+            if mapped_word.constant_situation != None:
                 current_cs = mapped_word.constant_situation
             else:
                 mapped_word.constant_situation = current_cs
@@ -45,7 +45,7 @@ class MappedWordList:
 
         for i in range(0, len(a) - len(b) + 1):
             if a[i:i + len(b)] == b:
-                return i
+                return self.words[i].constant_situation
         return None
 
         # searching using loop

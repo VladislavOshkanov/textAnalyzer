@@ -3,7 +3,8 @@ from Hypothesis import Hypothesis
 from StringTokenizer import tokenize
 from TextPreprocessor import split_text_by_words
 from MappedWordList import MappedWordList
-from MappedWord import  MappedWord
+from MappedWord import MappedWord
+from DateParser import find_full_dates, find_dot_dates, full_date_to_days, dot_date_to_days
 
 def process(text):
     return processText(text)
@@ -70,6 +71,19 @@ def get_related_cs(text, predicates, marker):
     return related_cs
 
 
+def build_hypothesis_by_dates(text, predicates):
+    full_dates = find_full_dates(text)
+    dot_dates = find_dot_dates(text)
+
+    mapped_word_list = MappedWordList()
+
+    for date in full_dates:
+        date_string = full_dates[1] + ' ' + full_dates[2] + ' ' + full_dates[3]
+        mapped_word = MappedWord()
+        mapped_word.set_word(date_string)
+        mapped_word_list.add_word(mapped_word)
+
+
 def build_hypothesis(text, predicates):
     """
         Построение гипотез о времени действия.
@@ -98,21 +112,32 @@ def build_hypothesis(text, predicates):
     first_indicator_index = -1
     second_indicator_index = -1
 
+    first_indicator = ''
+    second_indicator = ''
     for index, indicator in enumerate(indicators):
         if text.find(indicator) >= 0:
             if first_indicator_index == -1:
                 first_indicator_index = index
+                first_indicator = indicator
                 print(get_related_cs(text, predicates, indicator))
             else:
                 print(get_related_cs(text, predicates, indicator))
                 second_indicator_index = index
+                second_indicator = indicator
 
     if relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) > 0:
-        hypothesis.append(Hypothesis('Before', 0, 1))
+        hypothesis.append(Hypothesis('Before',
+                                     mapped_word_list.find_cs_of_wordlist(first_indicator.split()),
+                                     mapped_word_list.find_cs_of_wordlist(second_indicator.split())))
+
     elif relations[first_indicator_index][second_indicator_index] * (
             second_indicator_index - first_indicator_index) < 0:
-        hypothesis.append(Hypothesis('Before', 1, 0))
+        hypothesis.append(Hypothesis('Before',
+                                     mapped_word_list.find_cs_of_wordlist(second_indicator.split()),
+                                     mapped_word_list.find_cs_of_wordlist(first_indicator.split())))
     else:
-        hypothesis.append(Hypothesis('SameTime', 1, 0))
+        hypothesis.append(Hypothesis('Before',
+                                     mapped_word_list.find_cs_of_wordlist(second_indicator.split()),
+                                     mapped_word_list.find_cs_of_wordlist(first_indicator.split())))
 
     return hypothesis
