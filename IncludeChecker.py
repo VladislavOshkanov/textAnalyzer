@@ -1,7 +1,7 @@
 from Hypothesis import Hypothesis
 
 
-def checkForInclude(pred1, pred2, cs1, cs2):
+def check_for_include(pred1, pred2, cs1, cs2):
     """
     Проверяет гипотезу Include для двух предикатов
     :param pred1: многоместный предикат

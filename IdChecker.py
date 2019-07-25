@@ -19,4 +19,3 @@ def checkForId(pred1, pred2, cs1, cs2):
                 return None
 
     return Hypothesis('Id', cs1, cs2)
-                   

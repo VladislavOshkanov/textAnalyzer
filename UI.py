@@ -16,7 +16,7 @@ from kivy.base import runTouchApp
 from kivy.uix.checkbox import CheckBox
 from Processor import process, build_hypothesis
 from IdChecker import checkForId
-from IncludeChecker import checkForInclude
+from IncludeChecker import check_for_include
 from RDFExporter import export_to_rdf
 
 
@@ -61,7 +61,7 @@ class MainApp(App):
 
             for index1, predicate1 in enumerate(self.predicates):
                 for index2, predicate2 in enumerate(self.predicates):
-                    h = checkForInclude(predicate1, predicate2, index1, index2)
+                    h = check_for_include(predicate1, predicate2, index1, index2)
                     if h and index1 != index2: 
                         print(h.to_string())
                         self.hypothesis.append(h)
