@@ -5,6 +5,7 @@ from TextPreprocessor import split_text_by_words
 from MappedWordList import MappedWordList
 from MappedWord import MappedWord
 from DateParser import find_full_dates, find_dot_dates, full_date_to_days, dot_date_to_days
+from MappedDate import MappedDate
 
 def process(text):
     return processText(text)
@@ -71,17 +72,32 @@ def get_related_cs(text, predicates, marker):
     return related_cs
 
 
-def build_hypothesis_by_dates(text, predicates):
+def parse_dates(text):
+    """
+    Находит в тексте все даты, вычисляет их представление в днях, возвращая массив объектов MappedDate
+    :param text: текст на естественном языке
+    :return: массив объектов MappedDate
+    """
     full_dates = find_full_dates(text)
     dot_dates = find_dot_dates(text)
 
-    mapped_word_list = MappedWordList()
+    mapped_dates = []
 
     for date in full_dates:
-        date_string = full_dates[1] + ' ' + full_dates[2] + ' ' + full_dates[3]
-        mapped_word = MappedWord()
-        mapped_word.set_word(date_string)
-        mapped_word_list.add_word(mapped_word)
+        date_string = date[1] + ' ' + date[2] + ' ' + date[3]
+        mapped_date = MappedDate()
+        mapped_date.set_text_representation(date_string)
+        mapped_date.set_number_representation(full_date_to_days(date))
+        mapped_dates.append(mapped_date)
+
+    for date in dot_dates:
+        date_string = date[0] + ' ' + date[1] + ' ' + date[2]
+        mapped_date = MappedDate()
+        mapped_date.set_text_representation(date_string)
+        mapped_date.set_number_representation(dot_date_to_days(date))
+        mapped_dates.append(mapped_date)
+
+    return mapped_dates
 
 
 def build_hypothesis(text, predicates):
@@ -124,6 +140,14 @@ def build_hypothesis(text, predicates):
                 print(get_related_cs(text, predicates, indicator))
                 second_indicator_index = index
                 second_indicator = indicator
+
+    mapped_dates = parse_dates(text)
+
+    for date in mapped_dates:
+        date.set_constant_situation(
+            mapped_word_list.find_cs_of_wordlist(
+                date.text_representation.split()))
+        date.print()
 
     if relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) > 0:
         hypothesis.append(Hypothesis('Before',
