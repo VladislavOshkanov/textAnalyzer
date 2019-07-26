@@ -15,7 +15,7 @@ def checkForId(pred1, pred2, cs1, cs2):
 
     for pred1 in tp_array_1:
         for pred2 in tp_array_2:
-            if (pred1.name == pred2.name and (pred1.value[:3] not in pred2.value or pred2.value[:3] not in pred1.value)):
+            if pred1.name == pred2.name and (pred1.value[:3] not in pred2.value or pred2.value[:3] not in pred1.value):
                 return None
 
     return Hypothesis('Id', cs1, cs2)
