@@ -149,8 +149,8 @@ def build_hypothesis(text, predicates):
                 date.text_representation.split()))
         date.print()
 
-    for index1, date1 in mapped_dates:
-        for index2, date2 in mapped_dates:
+    for index1, date1 in enumerate(mapped_dates):
+        for index2, date2 in enumerate(mapped_dates):
             if index1 > index2:
                 if date1.number_representation < date2.number_representation:
                     hypothesis.append(Hypothesis('Before',
