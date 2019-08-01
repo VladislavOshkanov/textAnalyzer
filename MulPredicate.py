@@ -13,7 +13,7 @@ class MulPredicate:
             Преобразует производные от прилагательного предикаты в преидкаты с именем Являться и аргументом
             - прилагательным
         """
-        if (self.roles.get('act') == None):
+        if self.roles.get('act') is None:
             self.roles['какой'] = self.name
             self.roles['act'] = 'являться_0'
             self.name = 'являться'
@@ -32,12 +32,11 @@ class MulPredicate:
         """
         words = []
         for key, value in self.roles.items():
-            if (key == 'constant_situation'):
+            if key == 'constant_situation':
                 next
             else:
                 words.append(value)
         return words
-
 
     def to_two_positional(self):
         """

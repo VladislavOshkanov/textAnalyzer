@@ -5,6 +5,7 @@ from TextPreprocessor import split_text_by_words
 from MappedWordList import MappedWordList
 from MappedWord import MappedWord
 from DateParser import find_full_dates, find_dot_dates, full_date_to_days, dot_date_to_days
+from TimeParser import parse_colon_separated_time_with_seconds, parse_colon_separated_time_without_seconds, colon_separated_time_to_seconds
 from MappedDate import MappedDate
 
 
@@ -98,6 +99,37 @@ def parse_dates(text):
         mapped_dates.append(mapped_date)
 
     return mapped_dates
+
+
+def parse_times(text):
+    """
+    Находит в тексте все времена, вычисляет их представление секундах с начала суток,
+    возвращая массив объектов MappedTime
+    :param text: текст на естественном языке
+    :return: массив объектов MappedTime
+    """
+    times_without_seconds = parse_colon_separated_time_without_seconds(text)
+    times_with_seconds = parse_colon_separated_time_with_seconds(text)
+
+    mapped_times = []
+
+    for time in times_without_seconds:
+        time_string = time[0] + ':' + time[1]
+        mapped_time = MappedTime()
+        mapped_time.set_text_representation(time_string)
+        mapped_time.set_number_representation(date)
+        mapped_times.append(mapped_time)
+
+    for date in dot_dates:
+        date_string = date[0] + ' ' + date[1] + ' ' + date[2]
+        mapped_date = MappedDate()
+        mapped_date.set_text_representation(date_string)
+        mapped_date.set_number_representation(dot_date_to_days(date))
+        mapped_dates.append(mapped_date)
+
+    return mapped_dates
+
+
 
 
 def build_hypothesis(text, predicates):
