@@ -5,7 +5,9 @@ from TextPreprocessor import split_text_by_words
 from MappedWordList import MappedWordList
 from MappedWord import MappedWord
 from DateParser import find_full_dates, find_dot_dates, full_date_to_days, dot_date_to_days
+from TimeParser import parse_colon_separated_time_with_seconds, parse_colon_separated_time_without_seconds, colon_separated_time_to_seconds
 from MappedDate import MappedDate
+from MappedTime import MappedTime
 
 
 def process(text):
@@ -70,6 +72,34 @@ def get_related_cs(text, predicates, marker):
                         distance = abs(word_index - marker_index)
                         related_cs = index
     return related_cs
+
+
+def parse_times(text):
+    """
+    Находит в тексте все времена, вычисляет их представление в секундах с начала суток, возвращая массив
+    объектов MappedTime.
+    :param text:
+    :return:
+    """
+    times_with_seconds = parse_colon_separated_time_with_seconds(text)
+    times_without_seconds = parse_colon_separated_time_without_seconds(text)
+
+    mapped_times = []
+
+    for time in times_with_seconds:
+        time_string = time[0] + ':' + time[1] + ':' + time[2]
+        mapped_time = MappedTime()
+        mapped_time.set_text_representation(time_string)
+        mapped_time.set_number_representation(colon_separated_time_to_seconds(time))
+        mapped_times.append(mapped_time)
+
+    for time in times_without_seconds:
+        time_string = time[0] + ':' + time[1]
+        mapped_time = MappedTime()
+        mapped_time.set_text_representation(time_string)
+        mapped_time.set_number_representation(colon_separated_time_to_seconds(time))
+        mapped_times.append(mapped_time)
+    return mapped_times
 
 
 def parse_dates(text):
@@ -142,12 +172,19 @@ def build_hypothesis(text, predicates):
                 second_indicator = indicator
 
     mapped_dates = parse_dates(text)
+    mapped_times = parse_times(text)
 
     for date in mapped_dates:
         date.set_constant_situation(
             mapped_word_list.find_cs_of_wordlist(
                 date.text_representation.split()))
         date.print()
+
+    for time in mapped_times:
+        time.set_constant_situation(
+            mapped_word_list.find_cs_of_wordlist(
+                time.text_representation.split(':')))
+        time.print()
 
     for index1, date1 in enumerate(mapped_dates):
         for index2, date2 in enumerate(mapped_dates):
@@ -165,6 +202,31 @@ def build_hypothesis(text, predicates):
                                                  date2.constant_situation,
                                                  date1.constant_situation))
 
+    for index1, time1 in enumerate(mapped_times):
+        for index2, time2 in enumerate(mapped_times):
+            if index1 > index2:
+                print(index1)
+                print(index2)
+
+                if time1.number_representation < time2.number_representation:
+                    print("appending")
+
+                    # hypothesis.append(Hypothesis('Before',
+                    #                              time1.constant_situation,
+                    #                              time2.constant_situation))
+                elif time1.number_representation > time2.number_representation:
+                    print("appending")
+                    print(index1)
+                    print(index2)
+                    if time1.constant_situation != time2.constant_situation:
+                        hypothesis.append(Hypothesis('Before',
+                                                     time2.constant_situation,
+                                                     time1.constant_situation))
+                else:
+                    hypothesis.append(Hypothesis('SameTime',
+                                                 time2.constant_situation,
+                                                 time1.constant_situation))
+
     if relations[first_indicator_index][second_indicator_index] * (second_indicator_index - first_indicator_index) > 0:
         hypothesis.append(Hypothesis('Before',
                                      mapped_word_list.find_cs_of_wordlist(first_indicator.split()),
@@ -175,9 +237,9 @@ def build_hypothesis(text, predicates):
         hypothesis.append(Hypothesis('Before',
                                      mapped_word_list.find_cs_of_wordlist(second_indicator.split()),
                                      mapped_word_list.find_cs_of_wordlist(first_indicator.split())))
-    else:
-        hypothesis.append(Hypothesis('Before',
-                                     mapped_word_list.find_cs_of_wordlist(second_indicator.split()),
-                                     mapped_word_list.find_cs_of_wordlist(first_indicator.split())))
+    # else:
+    #     hypothesis.append(Hypothesis('Before',
+    #                                  mapped_word_list.find_cs_of_wordlist(second_indicator.split()),
+    #                                  mapped_word_list.find_cs_of_wordlist(first_indicator.split())))
 
     return hypothesis
